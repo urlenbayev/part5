@@ -1,0 +1,19 @@
+PUT http://localhost:3001/api/blogs/66917cb6dda6d7bed93e061d
+Content-Type: application/json
+
+{
+  "title": "Data Analysis with Python",
+  "author": "GeeksForGeeks",
+  "url": "https://www.geeksforgeeks.org/data-analysis-with-python/"
+}
+
+###
+PUT http://localhost:3001/api/blogs/66917cb6dda6d7bed93e061e
+Content-Type: application/json
+
+{
+  "title": "Containerization With Docker",
+  "author": "Samuel Kadima",
+  "url": "https://medium.com/@kadimasam/containerization-with-docker-a6bf9f5786a0",
+  "likes": 8
+}
