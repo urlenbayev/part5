@@ -34,6 +34,13 @@ const App = () => {
     blogServices.setToken(user.token);
   }, []);
 
+  useEffect(() => {
+    if (errorMessage) window.alert(errorMessage);
+    setTimeout(() => {
+      setErrorMessage(null);
+    }, 5000);
+  }, [errorMessage]);
+
   const handleLogin = async (event) => {
     event.preventDefault();
 
@@ -43,13 +50,11 @@ const App = () => {
       blogServices.setToken(user.token);
 
       setUser(user);
+    } catch (error) {
+      setErrorMessage(error.response.data.error);
+    } finally {
       setUsername("");
       setPassword("");
-    } catch {
-      setErrorMessage("wrong credentials");
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
     }
   };
 
@@ -95,20 +100,25 @@ const App = () => {
     );
   };
 
-  const addBlog = (event) => {
+  const addBlog = async (event) => {
     event.preventDefault();
-    const newBlog = {
-      title,
-      author,
-      url,
-    };
+    try {
+      const newBlog = {
+        title,
+        author,
+        url,
+      };
 
-    blogServices.create(newBlog).then((returnedObject) => {
-      setBlogs(blogs.concat(returnedObject));
+      const result = await blogServices.create(newBlog);
+      setBlogs(blogs.concat(result));
+      window.alert("Success! A new blog added.");
+    } catch (error) {
+      setErrorMessage(error.response.data.error);
+    } finally {
       setAuthor("");
       setTitle("");
       setUrl("");
-    });
+    }
   };
 
   const blogForm = () => {
