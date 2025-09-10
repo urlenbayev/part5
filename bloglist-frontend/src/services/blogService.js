@@ -8,15 +8,19 @@ const blogService = () => {
   };
 
   const getAll = async () => {
-    const res = await api.get(
-      "/blogs" /* {
-      headers: { Authorization: token },
-    } */
-    );
+    const res = await api.get("/blogs");
     return res.data;
   };
 
-  return { getAll, setToken };
+  const create = async (newObject) => {
+    const res = await api.post("/blogs", newObject, {
+      headers: { Authorization: token },
+    });
+
+    return res.data;
+  };
+
+  return { getAll, setToken, create };
 };
 
 export default blogService;

@@ -15,6 +15,10 @@ const App = () => {
   // 5 state
   const [errorMessage, setErrorMessage] = useState(null);
 
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [url, setUrl] = useState("");
+
   const userServices = userService();
   const blogServices = blogService();
 
@@ -63,6 +67,7 @@ const App = () => {
             <label>
               username
               <input
+                id="username"
                 type="text"
                 value={username}
                 onChange={({ target }) => {
@@ -75,6 +80,7 @@ const App = () => {
             <label>
               password
               <input
+                id="password"
                 type="password"
                 value={password}
                 onChange={({ target }) => {
@@ -89,30 +95,70 @@ const App = () => {
     );
   };
 
-  /*   const blogForm = () => {
+  const addBlog = (event) => {
+    event.preventDefault();
+    const newBlog = {
+      title,
+      author,
+      url,
+    };
+
+    blogServices.create(newBlog).then((returnedObject) => {
+      setBlogs(blogs.concat(returnedObject));
+      setAuthor("");
+      setTitle("");
+      setUrl("");
+    });
+  };
+
+  const blogForm = () => {
     return (
       <div>
-        <form>
+        <form onSubmit={addBlog}>
           <div>
             <label>
-              title: <input type="text" name="" id="" />
+              title:
+              <input
+                id="title"
+                type="text"
+                value={title}
+                onChange={({ target }) => {
+                  setTitle(target.value);
+                }}
+              />
             </label>
           </div>
           <div>
             <label>
-              author: <input type="text" name="" id="" />
+              author:
+              <input
+                id="author"
+                type="text"
+                value={author}
+                onChange={({ target }) => {
+                  setAuthor(target.value);
+                }}
+              />
             </label>
           </div>
           <div>
             <label>
-              url: <input type="text" name="" id="" />
+              url:
+              <input
+                id="url"
+                type="text"
+                value={url}
+                onChange={({ target }) => {
+                  setUrl(target.value);
+                }}
+              />
             </label>
           </div>
           <button type="submit">create</button>
         </form>
       </div>
     );
-  }; */
+  };
 
   return (
     <div>
@@ -122,10 +168,12 @@ const App = () => {
           <h2>blogs</h2>
           <span>{user.name} is logged in</span>
           <button onClick={doLogOut}>log out</button>
+
+          <h2>Create new</h2>
+          {blogForm()}
           {blogs.map((blog) => (
             <Blog key={blog.id} blog={blog} />
           ))}
-          {/*  {blogForm()} */}
         </div>
       )}
     </div>
