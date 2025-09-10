@@ -4,20 +4,40 @@ import blogService from "./services/blogService";
 import userService from "./services/userService";
 
 const App = () => {
+  // 1 state
   const [blogs, setBlogs] = useState([]);
+  // 2 state
+  const [user, setUser] = useState(null);
+  // 3 state
+  const [username, setUsername] = useState("");
+  // 4 state
+  const [password, setPassword] = useState("");
+  // 5 state
+  const [errorMessage, setErrorMessage] = useState(null);
+
   const userServices = userService();
   const blogServices = blogService();
-  const [user, setUser] = useState(null);
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState(null);
+  useEffect(() => {
+    blogServices.getAll().then((blogs) => setBlogs(blogs));
+  }, []);
+
+  useEffect(() => {
+    const loggedUser = window.localStorage.getItem("loggedUser");
+    if (!loggedUser) return;
+    const user = JSON.parse(loggedUser);
+    setUser(user);
+    blogServices.setToken(user.token);
+  }, []);
 
   const handleLogin = async (event) => {
     event.preventDefault();
 
     try {
       const user = await userServices.login({ username, password });
+      window.localStorage.setItem("loggedUser", JSON.stringify(user));
+      blogServices.setToken(user.token);
+
       setUser(user);
       setUsername("");
       setPassword("");
@@ -27,6 +47,11 @@ const App = () => {
         setErrorMessage(null);
       }, 5000);
     }
+  };
+
+  const doLogOut = async () => {
+    setUser(null);
+    window.localStorage.clear();
   };
 
   const loginForm = () => {
@@ -64,9 +89,30 @@ const App = () => {
     );
   };
 
-  useEffect(() => {
-    blogServices.getAll().then((blogs) => setBlogs(blogs));
-  }, []);
+  /*   const blogForm = () => {
+    return (
+      <div>
+        <form>
+          <div>
+            <label>
+              title: <input type="text" name="" id="" />
+            </label>
+          </div>
+          <div>
+            <label>
+              author: <input type="text" name="" id="" />
+            </label>
+          </div>
+          <div>
+            <label>
+              url: <input type="text" name="" id="" />
+            </label>
+          </div>
+          <button type="submit">create</button>
+        </form>
+      </div>
+    );
+  }; */
 
   return (
     <div>
@@ -74,10 +120,12 @@ const App = () => {
       {user && (
         <div>
           <h2>blogs</h2>
-          <p>{user.name} is logged in</p>
+          <span>{user.name} is logged in</span>
+          <button onClick={doLogOut}>log out</button>
           {blogs.map((blog) => (
             <Blog key={blog.id} blog={blog} />
           ))}
+          {/*  {blogForm()} */}
         </div>
       )}
     </div>

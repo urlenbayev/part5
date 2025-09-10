@@ -1,6 +1,6 @@
-const bcrypt = require('bcryptjs')
-const usersRouter = require('express').Router()
-const User = require('../models/User')
+const bcrypt = require("bcryptjs");
+const usersRouter = require("express").Router();
+const User = require("../models/User");
 
 //GET http://localhost:3001/api/users
 //Retrieve all users
@@ -18,31 +18,30 @@ const User = require('../models/User')
   ...
 ] 
   */
-usersRouter.get('/', async (req, res) => {
-  const result = await User.find({}).populate('blogs')
-  res.json(result)
-})
-
+usersRouter.get("/", async (req, res) => {
+  const result = await User.find({}).populate("blogs");
+  res.json(result);
+});
 
 //POST http://localhost:3001/api/users
 //To create a user with username, name and password
-usersRouter.post('/', async (req, res, next) => {
-  try  {  
-    const {username, name, password} = req.body
-    const saltRounds = 10
-    const passwordHash = await bcrypt.hash(password, saltRounds)
+usersRouter.post("/", async (req, res, next) => {
+  try {
+    const { username, name, password } = req.body;
+    const saltRounds = 10;
+    const passwordHash = await bcrypt.hash(password, saltRounds);
 
     const user = new User({
       username,
-      name, 
-      passwordHash
-    })
+      name,
+      passwordHash,
+    });
 
-    const savedUser = await user.save()
-    res.status(201).json(savedUser)
+    const savedUser = await user.save();
+    res.status(201).json(savedUser);
   } catch (error) {
-    next(error)
+    next(error);
   }
-})
+});
 
-module.exports = usersRouter
+module.exports = usersRouter;
