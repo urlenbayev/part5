@@ -1,7 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Blog from "./components/Blog";
 import blogService from "./services/blogService";
 import userService from "./services/userService";
+import BlogForm from "./components/BlogForm";
+import LoginForm from "./components/LoginForm";
+import Togglable from "./components/Togglable";
 
 const App = () => {
   // 1 state
@@ -14,10 +17,6 @@ const App = () => {
   const [password, setPassword] = useState("");
   // 5 state
   const [errorMessage, setErrorMessage] = useState(null);
-
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [url, setUrl] = useState("");
 
   const userServices = userService();
   const blogServices = blogService();
@@ -63,116 +62,32 @@ const App = () => {
     window.localStorage.clear();
   };
 
-  const loginForm = () => {
-    return (
-      <div>
-        <h1>Log in</h1>
-        <form onSubmit={handleLogin}>
-          <div>
-            <label>
-              username
-              <input
-                id="username"
-                type="text"
-                value={username}
-                onChange={({ target }) => {
-                  setUsername(target.value);
-                }}
-              />
-            </label>
-          </div>
-          <div>
-            <label>
-              password
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={({ target }) => {
-                  setPassword(target.value);
-                }}
-              />
-            </label>
-          </div>
-          <button type="submit">login</button>
-        </form>
-      </div>
-    );
-  };
-
-  const addBlog = async (event) => {
-    event.preventDefault();
-    try {
-      const newBlog = {
-        title,
-        author,
-        url,
-      };
-
-      const result = await blogServices.create(newBlog);
-      setBlogs(blogs.concat(result));
-      window.alert("Success! A new blog added.");
-    } catch (error) {
-      setErrorMessage(error.response.data.error);
-    } finally {
-      setAuthor("");
-      setTitle("");
-      setUrl("");
-    }
-  };
+  const blogFormRef = useRef();
 
   const blogForm = () => {
     return (
-      <div>
-        <form onSubmit={addBlog}>
-          <div>
-            <label>
-              title:
-              <input
-                id="title"
-                type="text"
-                value={title}
-                onChange={({ target }) => {
-                  setTitle(target.value);
-                }}
-              />
-            </label>
-          </div>
-          <div>
-            <label>
-              author:
-              <input
-                id="author"
-                type="text"
-                value={author}
-                onChange={({ target }) => {
-                  setAuthor(target.value);
-                }}
-              />
-            </label>
-          </div>
-          <div>
-            <label>
-              url:
-              <input
-                id="url"
-                type="text"
-                value={url}
-                onChange={({ target }) => {
-                  setUrl(target.value);
-                }}
-              />
-            </label>
-          </div>
-          <button type="submit">create</button>
-        </form>
-      </div>
+      <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+        <BlogForm
+          createBlog={blogServices.create}
+          blogs={blogs}
+          handleBlogsChange={setBlogs}
+          handleErrorChange={setErrorMessage}
+        />
+      </Togglable>
     );
   };
 
   return (
     <div>
-      {!user && loginForm()}
+      {!user && (
+        <LoginForm
+          handleLogin={handleLogin}
+          handlePasswordChange={setPassword}
+          handleUsernameChange={setUsername}
+          username={username}
+          password={password}
+        />
+      )}
       {user && (
         <div>
           <h2>blogs</h2>
