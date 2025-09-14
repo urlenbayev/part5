@@ -5,6 +5,7 @@ import userService from "./services/userService";
 import BlogForm from "./components/BlogForm";
 import LoginForm from "./components/LoginForm";
 import Togglable from "./components/Togglable";
+import "./components/Blog.css";
 
 const App = () => {
   // 1 state
@@ -50,7 +51,11 @@ const App = () => {
 
       setUser(user);
     } catch (error) {
-      setErrorMessage(error.response.data.error);
+      if (error.response) {
+        setErrorMessage(error.response.data.error);
+      } else {
+        setErrorMessage(error);
+      }
     } finally {
       setUsername("");
       setPassword("");
@@ -64,15 +69,25 @@ const App = () => {
 
   const blogFormRef = useRef();
 
+  const addBlog = async (newBlog) => {
+    try {
+      const result = await blogServices.create(newBlog);
+      setBlogs(blogs.concat(result));
+      blogFormRef.current.toggleVisibility();
+      window.alert("Success! A new blog added.");
+    } catch (error) {
+      if (error.response) {
+        setErrorMessage(error.response.data.error);
+      } else {
+        setErrorMessage(error);
+      }
+    }
+  };
+
   const blogForm = () => {
     return (
       <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-        <BlogForm
-          createBlog={blogServices.create}
-          blogs={blogs}
-          handleBlogsChange={setBlogs}
-          handleErrorChange={setErrorMessage}
-        />
+        <BlogForm createBlog={addBlog} />
       </Togglable>
     );
   };
@@ -97,7 +112,12 @@ const App = () => {
           <h2>Create new</h2>
           {blogForm()}
           {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
+            <div key={blog.id} className="blog">
+              <span>{blog.title}</span>
+              <Togglable buttonLabel="view">
+                <Blog blog={blog} />
+              </Togglable>
+            </div>
           ))}
         </div>
       )}
