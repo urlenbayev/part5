@@ -22,6 +22,11 @@ const App = () => {
   const userServices = userService();
   const blogServices = blogService();
 
+  const doLogOut = async () => {
+    setUser(null);
+    window.localStorage.clear();
+  };
+
   useEffect(() => {
     blogServices.getAll().then((blogs) => setBlogs(blogs));
   }, []);
@@ -51,8 +56,9 @@ const App = () => {
 
       setUser(user);
     } catch (error) {
+      console.error("Error: ", error);
       if (error.response) {
-        setErrorMessage(error.response.data.error);
+        setErrorMessage("Error: " + JSON.stringify(error.response.data.error));
       } else {
         setErrorMessage(error);
       }
@@ -62,9 +68,23 @@ const App = () => {
     }
   };
 
-  const doLogOut = async () => {
-    setUser(null);
-    window.localStorage.clear();
+  const handleLike = async (blog) => {
+    try {
+      const updatedBlog = { ...blog, likes: blog.likes + 1 };
+      const result = await blogServices.putBlog(updatedBlog);
+      setBlogs(
+        blogs.map((blog) =>
+          blog.id === result.id ? { ...blog, likes: blog.likes + 1 } : blog
+        )
+      );
+    } catch (error) {
+      console.error("Error: ", error);
+      if (error.response) {
+        setErrorMessage("Error: " + JSON.stringify(error.response.data.error));
+      } else {
+        setErrorMessage(error);
+      }
+    }
   };
 
   const blogFormRef = useRef();
@@ -76,8 +96,9 @@ const App = () => {
       blogFormRef.current.toggleVisibility();
       window.alert("Success! A new blog added.");
     } catch (error) {
+      console.error("Error: ", error);
       if (error.response) {
-        setErrorMessage(error.response.data.error);
+        setErrorMessage("Error: " + JSON.stringify(error.response.data.error));
       } else {
         setErrorMessage(error);
       }
@@ -115,7 +136,7 @@ const App = () => {
             <div key={blog.id} className="blog">
               <span>{blog.title}</span>
               <Togglable buttonLabel="view">
-                <Blog blog={blog} />
+                <Blog blog={blog} handleLike={handleLike} />
               </Togglable>
             </div>
           ))}

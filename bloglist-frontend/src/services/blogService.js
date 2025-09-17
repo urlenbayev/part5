@@ -20,7 +20,12 @@ const blogService = () => {
     return res.data;
   };
 
-  return { getAll, setToken, create };
+  const putBlog = async (newBlog) => {
+    const res = await api.put(`/blogs/${newBlog.id}`, newBlog);
+    return res.data;
+  };
+
+  return { getAll, setToken, create, putBlog };
 };
 
 export default blogService;

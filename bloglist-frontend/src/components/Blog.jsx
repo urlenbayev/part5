@@ -1,9 +1,16 @@
-const Blog = ({ blog }) => {
+const Blog = ({ blog, handleLike }) => {
   return (
     <div>
       {blog.url}
       <br />
-      likes {blog.likes} <button>like</button>
+      likes {blog.likes}{" "}
+      <button
+        onClick={() => {
+          handleLike(blog);
+        }}
+      >
+        like
+      </button>
       <br />
       {blog.author}
     </div>

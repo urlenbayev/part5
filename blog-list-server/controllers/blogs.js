@@ -28,7 +28,10 @@ const getTokenFrom = (req) => {
 ] 
 */
 blogsRouter.get("/", async (req, res) => {
-  const blogs = await Blog.find({}).populate("user");
+  const blogs = await Blog.find({}).populate({
+    path: "user",
+    select: "-blogs",
+  });
   res.json(blogs);
 });
 
@@ -53,22 +56,37 @@ blogsRouter.post("/", async (req, res, next) => {
     }
 
     const user = await User.findById(decodedToken.id);
-
+    blog.user = user.id;
     const result = await blog.save();
     user.blogs = user.blogs.concat(result._id);
     await user.save();
 
     res.status(201).json(result);
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).json({ error: error });
   }
 });
+
+/**
+|--------------------------------------------------
+GET /resource/:id?
+Get resource
+Example data
+[
+  {
+  },
+  ...
+]
+|--------------------------------------------------
+*/
 
 //PUT http://localhost:3001/api/blogs/:id
 //For updating title, author, url and likes for a blog
 blogsRouter.put("/:id", async (req, res, next) => {
-  const { id } = req.params;
-  const blog = req.body;
+  const { id } = req.params,
+    { title, author, url, likes, user } = req.body,
+    blog = { title, author, url, likes, user };
 
   try {
     const result = await Blog.findByIdAndUpdate(id, blog, { new: true });

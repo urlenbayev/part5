@@ -1,1 +1,5 @@
+### GET all users
 GET http://localhost:3001/api/users
+
+### GET a certain user
+GET http://localhost:3001/api/users/669d331587bebcf6f5b9dd89

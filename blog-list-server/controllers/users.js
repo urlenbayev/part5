@@ -23,6 +23,35 @@ usersRouter.get("/", async (req, res) => {
   res.json(result);
 });
 
+/**
+|--------------------------------------------------
+GET http://localhost:3001/api/users/:id
+Get a certain user
+Example data
+[
+  {
+  "username": "mluukkai",
+  "name": "Matti Luukkainen",
+  "blogs": [
+    "68c1da8bd42e574b47c8ddbd",
+    ],
+  "id": "669d331587bebcf6f5b9dd89"
+  },
+  ...
+]
+|--------------------------------------------------
+*/
+usersRouter.get("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id);
+    res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
+});
+
 //POST http://localhost:3001/api/users
 //To create a user with username, name and password
 usersRouter.post("/", async (req, res, next) => {
