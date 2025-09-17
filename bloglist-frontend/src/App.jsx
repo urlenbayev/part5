@@ -132,14 +132,16 @@ const App = () => {
 
           <h2>Create new</h2>
           {blogForm()}
-          {blogs.map((blog) => (
-            <div key={blog.id} className="blog">
-              <span>{blog.title}</span>
-              <Togglable buttonLabel="view">
-                <Blog blog={blog} handleLike={handleLike} />
-              </Togglable>
-            </div>
-          ))}
+          {[...blogs]
+            .sort((a, b) => b.likes - a.likes)
+            .map((blog) => (
+              <div key={blog.id} className="blog">
+                <span>{blog.title}</span>
+                <Togglable buttonLabel="view">
+                  <Blog blog={blog} handleLike={handleLike} />
+                </Togglable>
+              </div>
+            ))}
         </div>
       )}
     </div>
