@@ -29,6 +29,7 @@ const App = () => {
 
   useEffect(() => {
     blogServices.getAll().then((blogs) => setBlogs(blogs));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -37,6 +38,7 @@ const App = () => {
     const user = JSON.parse(loggedUser);
     setUser(user);
     blogServices.setToken(user.token);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
