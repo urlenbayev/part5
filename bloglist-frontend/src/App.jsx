@@ -70,13 +70,32 @@ const App = () => {
 
   const handleLike = async (blog) => {
     try {
-      const updatedBlog = { ...blog, likes: blog.likes + 1 };
+      const updatedBlog = {
+        ...blog,
+        likes: blog.likes + 1,
+        user: blog.user.id,
+      };
       const result = await blogServices.putBlog(updatedBlog);
       setBlogs(
         blogs.map((blog) =>
           blog.id === result.id ? { ...blog, likes: blog.likes + 1 } : blog
         )
       );
+    } catch (error) {
+      console.error("Error: ", error);
+      if (error.response) {
+        setErrorMessage("Error: " + JSON.stringify(error.response.data.error));
+      } else {
+        setErrorMessage(error);
+      }
+    }
+  };
+  const handleDelete = async (blog_id) => {
+    try {
+      if (window.confirm("Remove the blog?")) {
+        const res = await blogServices.deleteBlog(blog_id);
+        setBlogs(blogs.filter((blog) => blog.id !== res.id));
+      }
     } catch (error) {
       console.error("Error: ", error);
       if (error.response) {
@@ -138,7 +157,12 @@ const App = () => {
               <div key={blog.id} className="blog">
                 <span>{blog.title}</span>
                 <Togglable buttonLabel="view">
-                  <Blog blog={blog} handleLike={handleLike} />
+                  <Blog
+                    blog={blog}
+                    handleLike={handleLike}
+                    handleDelete={handleDelete}
+                    user={user}
+                  />
                 </Togglable>
               </div>
             ))}

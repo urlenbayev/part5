@@ -25,7 +25,12 @@ const blogService = () => {
     return res.data;
   };
 
-  return { getAll, setToken, create, putBlog };
+  const deleteBlog = async (blog_id) => {
+    const res = await api.delete(`/blogs/${blog_id}`);
+    return res.data;
+  };
+
+  return { getAll, setToken, create, putBlog, deleteBlog };
 };
 
 export default blogService;
