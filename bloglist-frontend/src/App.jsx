@@ -5,7 +5,6 @@ import userService from "./services/userService";
 import BlogForm from "./components/BlogForm";
 import LoginForm from "./components/LoginForm";
 import Togglable from "./components/Togglable";
-import "./components/Blog.css";
 
 const App = () => {
   // 1 state
@@ -156,16 +155,13 @@ const App = () => {
           {[...blogs]
             .sort((a, b) => b.likes - a.likes)
             .map((blog) => (
-              <div key={blog.id} className="blog">
-                <span>{blog.title}</span>
-                <Togglable buttonLabel="view">
-                  <Blog
-                    blog={blog}
-                    handleLike={handleLike}
-                    handleDelete={handleDelete}
-                    user={user}
-                  />
-                </Togglable>
+              <div key={blog.id}>
+                <Blog
+                  blog={blog}
+                  handleLike={handleLike}
+                  handleDelete={handleDelete}
+                  user={user}
+                />
               </div>
             ))}
         </div>
