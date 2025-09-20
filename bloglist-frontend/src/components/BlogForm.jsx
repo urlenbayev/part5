@@ -27,6 +27,7 @@ export default function BlogForm({ createBlog }) {
               onChange={({ target }) => {
                 setTitle(target.value);
               }}
+              placeholder="Type title here"
             />
           </label>
         </div>
@@ -40,6 +41,7 @@ export default function BlogForm({ createBlog }) {
               onChange={({ target }) => {
                 setAuthor(target.value);
               }}
+              placeholder="Type author here"
             />
           </label>
         </div>
@@ -53,6 +55,7 @@ export default function BlogForm({ createBlog }) {
               onChange={({ target }) => {
                 setUrl(target.value);
               }}
+              placeholder="Type url here"
             />
           </label>
         </div>

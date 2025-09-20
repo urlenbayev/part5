@@ -54,7 +54,7 @@ test("url and likes are visible when toggle button pressed", async () => {
   expect(likes).toBeVisible();
 });
 
-test.only("event handler for like called twice when like pressed twice", async () => {
+test("event handler for like called twice when like pressed twice", async () => {
   const mockHandler = vi.fn();
   render(
     <Blog
