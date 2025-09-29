@@ -16,13 +16,17 @@ const getTokenFrom = (req) => {
 //Result is an array of blogs with title, author, url and likes
 /* 
 [
-  {
-    "title": "Why use Scala for building backend applications?",
-    "author": "JAROSLAV REGEC",
-    "url": "https://scalac.io/blog/why-use-scala/",
-    "likes": 1,
-    "user": "669d30f99152d457f5002430",
-    "id": "669d38757741c8486d0c14ee"
+ {
+    "title": "asdsa",
+    "author": "sadsad",
+    "url": "sadad",
+    "likes": 0,
+    "user": {
+      "username": "demo_user",
+      "name": "Demo User",
+      "id": "68d9afe636aa46d111177148"
+    },
+    "id": "68d9be4736aa46d11117717d"
   },
   ...
 ] 
@@ -30,7 +34,7 @@ const getTokenFrom = (req) => {
 blogsRouter.get("/", async (req, res) => {
   const blogs = await Blog.find({}).populate({
     path: "user",
-    select: "-blogs",
+    select: "username name id ",
   });
   res.json(blogs);
 });
@@ -57,11 +61,16 @@ blogsRouter.post("/", async (req, res, next) => {
 
     const user = await User.findById(decodedToken.id);
     blog.user = user.id;
+
     const result = await blog.save();
     user.blogs = user.blogs.concat(result._id);
-    await user.save();
 
-    res.status(201).json(result);
+    await user.save();
+    const populatedBlog = await result.populate({
+      path: "user",
+      select: "username name id ",
+    });
+    res.status(201).json(populatedBlog);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: error });

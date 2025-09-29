@@ -1,5 +1,5 @@
 const { test, expect, beforeEach, describe } = require("@playwright/test");
-
+const { loginWith, createBlog } = require("./helper");
 describe("Blog app", async () => {
   beforeEach(async ({ page, request }) => {
     await request.post("http://localhost:3001/api/testing/reset");
@@ -21,20 +21,25 @@ describe("Blog app", async () => {
   });
 
   describe("Login", () => {
-    test.only("successful login", async ({ page }) => {
-      await page.getByLabel("username").fill("demo_user");
-      await page.getByLabel("password").fill("demo_1");
-
-      await page.getByRole("button", { name: "login" }).click();
+    test("successful login", async ({ page }) => {
+      await loginWith(page, "demo_user", "demo_1");
       await expect(page.getByText("Demo User is logged in")).toBeVisible();
     });
 
-    test.only("failed login", async ({ page }) => {
-      await page.getByLabel("username").fill("cri");
-      await page.getByLabel("password").fill("eqf");
-
-      await page.getByRole("button", { name: "login" }).click();
+    test("failed login", async ({ page }) => {
+      await loginWith(page, "sadsadr", "asdsa");
       await expect(page.getByText("blogs")).toBeHidden();
+    });
+  });
+
+  describe("When logged in", () => {
+    beforeEach(async ({ page }) => {
+      await loginWith(page, "demo_user", "demo_1");
+    });
+
+    test("a new blog can be created", async ({ page }) => {
+      await createBlog(page, "Demo title", "Demo author", "demo url");
+      await expect(page.getByText("Demo title")).toBeVisible();
     });
   });
 });

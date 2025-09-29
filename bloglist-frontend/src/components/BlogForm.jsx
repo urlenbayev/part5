@@ -19,7 +19,7 @@ export default function BlogForm({ createBlog }) {
       <form onSubmit={addBlog}>
         <div>
           <label>
-            title:
+            title
             <input
               id="title"
               type="text"
@@ -33,7 +33,7 @@ export default function BlogForm({ createBlog }) {
         </div>
         <div>
           <label>
-            author:
+            author
             <input
               id="author"
               type="text"
@@ -47,7 +47,7 @@ export default function BlogForm({ createBlog }) {
         </div>
         <div>
           <label>
-            url:
+            url
             <input
               id="url"
               type="text"

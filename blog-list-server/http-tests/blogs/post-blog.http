@@ -1,6 +1,15 @@
-POST http://localhost:3001/api/blogs
+### Variables
+@hostname = localhost
+@protocol =  http
+@port = 3001
+@mountPoint = api
+@host = {{hostname}}:{{port}}
+@baseUrl = {{protocol}}://{{host}}/{{mountPoint}}
+@token = Bearer {{$dotenv TOKEN}}
+
+POST {{baseUrl}}/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpvZTMiLCJpZCI6IjY2OWQ4MDg4MDE5OTEyODFjZTQ3ZGNjMyIsImlhdCI6MTcyMTU5ODIyMCwiZXhwIjoxNzIxNjAxODIwfQ.dSLsz88ePFDxBEqsBoVHAgAEjKMkas-YjTV1v_Th4pE
+Authorization: {{token}} 
 
 {
   "title": "Top 10 ReactJS Tips and Tricks for Beginners",
