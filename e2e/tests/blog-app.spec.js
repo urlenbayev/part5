@@ -1,6 +1,6 @@
 const { test, expect, beforeEach, describe } = require("@playwright/test");
 const { loginWith, createBlog } = require("./helper");
-describe("Blog app", async () => {
+describe("Blog app", () => {
   beforeEach(async ({ page, request }) => {
     await request.post("http://localhost:3001/api/testing/reset");
     await request.post("http://localhost:3001/api/users", {
@@ -40,6 +40,17 @@ describe("Blog app", async () => {
     test("a new blog can be created", async ({ page }) => {
       await createBlog(page, "Demo title", "Demo author", "demo url");
       await expect(page.getByText("Demo title")).toBeVisible();
+    });
+
+    describe("and a blog exists", () => {
+      beforeEach(async ({ page }) => {
+        await createBlog(page, "Demo title", "Demo author", "demo url");
+        await page.getByRole("button", { name: "view" }).click();
+      });
+      test("likes can be incremented", async ({ page }) => {
+        await page.getByRole("button", { name: "like" }).click();
+        await expect(page.getByText("likes 1")).toBeVisible();
+      });
     });
   });
 });
