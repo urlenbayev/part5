@@ -38,7 +38,7 @@ describe("Blog app", () => {
     });
 
     test("a new blog can be created", async ({ page }) => {
-      await createBlog(page, "Demo title", "Demo author", "demo url");
+      await createBlog(page, "Demo title 222", "Demo author", "demo url");
       await expect(page.getByText("Demo title")).toBeVisible();
     });
 
@@ -50,6 +50,11 @@ describe("Blog app", () => {
       test("likes can be incremented", async ({ page }) => {
         await page.getByRole("button", { name: "like" }).click();
         await expect(page.getByText("likes 1")).toBeVisible();
+      });
+      test("blog can be deleted", async ({ page }) => {
+        page.on("dialog", (dialog) => dialog.accept());
+        await page.getByRole("button", { name: "delete" }).click();
+        await expect(page.getByText("Demo title 222")).toBeHidden();
       });
     });
   });
