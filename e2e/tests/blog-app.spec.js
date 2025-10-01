@@ -57,5 +57,30 @@ describe("Blog app", () => {
         await expect(page.getByText("Demo title 222")).toBeHidden();
       });
     });
+
+    describe("with multiple users", () => {
+      beforeEach(async ({ request }) => {
+        await request.post("http://localhost:3001/api/users", {
+          data: {
+            name: "Demo User2",
+            username: "demo_user2",
+            password: "demo_2",
+          },
+        });
+      });
+      test("only the owner can see delete button for their blogs", async ({
+        page,
+      }) => {
+        await createBlog(page, "Demo title1", "Demo authorfirst", "demo url1");
+        await page.getByRole("button", { name: "View" }).click();
+        await expect(
+          page.getByRole("button", { name: "delete" })
+        ).toBeVisible();
+        await page.getByRole("button", { name: "log out" }).click();
+        await loginWith(page, "demo_user2", "demo_2");
+        await page.getByRole("button", { name: "View" }).click();
+        await expect(page.getByRole("button", { name: "delete" })).toBeHidden();
+      });
+    });
   });
 });
