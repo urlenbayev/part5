@@ -1,3 +1,5 @@
+import { time } from "console";
+
 const loginWith = async (page, username, password) => {
   await page.getByLabel("username").fill(username);
   await page.getByLabel("password").fill(password);
@@ -12,4 +14,11 @@ const createBlog = async (page, title, author, url) => {
   await page.getByRole("button", { name: "create" }).click();
 };
 
-export { loginWith, createBlog };
+const likeBlog = async (blog, likeNumber) => {
+  await blog.getByRole("button", { name: "View" }).click();
+  for (let i = 0; i < likeNumber; i++) {
+    await blog.getByRole("button", { name: "like" }).click();
+  }
+};
+
+export { loginWith, createBlog, likeBlog };

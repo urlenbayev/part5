@@ -1,5 +1,5 @@
 const { test, expect, beforeEach, describe } = require("@playwright/test");
-const { loginWith, createBlog } = require("./helper");
+const { loginWith, createBlog, likeBlog } = require("./helper");
 describe("Blog app", () => {
   beforeEach(async ({ page, request }) => {
     await request.post("http://localhost:3001/api/testing/reset");
@@ -56,6 +56,33 @@ describe("Blog app", () => {
         await page.getByRole("button", { name: "delete" }).click();
         await expect(page.getByText("Demo title 222")).toBeHidden();
       });
+    });
+
+    test("Blogs are sorted by likes", async ({ page }) => {
+      await createBlog(
+        page,
+        "First Blog with 10 likes",
+        "Demo author",
+        "demo url"
+      );
+      await createBlog(
+        page,
+        "Second Blog with 13 likes",
+        "Demo author",
+        "demo url"
+      );
+
+      const blogs = page.locator(".blog");
+
+      const firstBlog = blogs.filter({ hasText: "First Blog with 10 likes" });
+
+      const secondBlog = blogs.filter({ hasText: "Second Blog with 13 likes" });
+
+      await likeBlog(firstBlog, 10);
+      await likeBlog(secondBlog, 13);
+
+      await expect(blogs.first()).toContainText("Second Blog with 13 likes");
+      await expect(blogs.last()).toContainText("First Blog with 10 likes");
     });
 
     describe("with multiple users", () => {
