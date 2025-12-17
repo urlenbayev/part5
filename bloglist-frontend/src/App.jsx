@@ -27,16 +27,14 @@ const App = () => {
   };
 
   useEffect(() => {
-    blogServices.getAll().then((blogs) => setBlogs(blogs));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
     const loggedUser = window.localStorage.getItem("loggedUser");
-    if (!loggedUser) return;
-    const user = JSON.parse(loggedUser);
-    setUser(user);
-    blogServices.setToken(user.token);
+    if (loggedUser) {
+      const user = JSON.parse(loggedUser);
+      setUser(user);
+      blogServices.setToken(user.token);
+    }
+    
+    blogServices.getAll().then((blogs) => setBlogs(blogs));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
