@@ -24,6 +24,7 @@ jobs:
           NODE_ENV: ${{ secrets.NODE_ENV }}
           TEST_DB_CONNECTION_URL: ${{ secrets.TEST_DB_CONNECTION_URL }}
           PORT: ${{ secrets.PORT }}
+          SECRET: ${{ secrets.SECRET }}
         run: npm test
       
       - name: Install frontend dependencies
@@ -40,6 +41,7 @@ jobs:
           NODE_ENV: ${{ secrets.NODE_ENV }}
           TEST_DB_CONNECTION_URL: ${{ secrets.TEST_DB_CONNECTION_URL }}
           PORT: 3001
+          SECRET: ${{ secrets.SECRET }}
         run: npm start &
       
       - name: Start frontend server
