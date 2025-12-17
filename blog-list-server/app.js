@@ -14,6 +14,7 @@ mongoose
 
 //Middlewares
 app.use(cors());
+app.use(express.static("../bloglist-frontend/dist"));
 app.use(express.json());
 app.use(morgan);
 
