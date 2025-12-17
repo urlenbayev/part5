@@ -4,8 +4,12 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/Blog')
+const User = require('../models/User')
+const bcrypt = require('bcryptjs')
 
 const api = supertest(app)
+
+let token = null
 
 const testBlogs = 
  [
@@ -28,6 +32,19 @@ let testBlogsIds = []
 
 //Before each test, clear the database and insert test blogs
 beforeEach(async () => {
+  // Create test user and get token
+  await User.deleteMany({})
+  const passwordHash = await bcrypt.hash('testpassword', 10)
+  const user = new User({ username: 'testuser', passwordHash })
+  await user.save()
+  
+  const loginResponse = await api
+    .post('/api/login')
+    .send({ username: 'testuser', password: 'testpassword' })
+  
+  token = loginResponse.body.token
+  
+  // Setup test blogs
   await Blog.deleteMany({})
   let blogObject = new Blog(testBlogs[0])
   await blogObject.save()
@@ -96,6 +113,7 @@ test('rows number increased by one', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
