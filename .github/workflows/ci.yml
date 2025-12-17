@@ -21,7 +21,6 @@ jobs:
       - name: Run backend tests
         working-directory: ./blog-list-server
         env:
-          NODE_ENV: ${{ secrets.NODE_ENV }}
           TEST_DB_CONNECTION_URL: ${{ secrets.TEST_DB_CONNECTION_URL }}
           PORT: ${{ secrets.PORT }}
           SECRET: ${{ secrets.SECRET }}
@@ -38,16 +37,15 @@ jobs:
       - name: Start backend server
         working-directory: ./blog-list-server
         env:
-          NODE_ENV: ${{ secrets.NODE_ENV }}
           TEST_DB_CONNECTION_URL: ${{ secrets.TEST_DB_CONNECTION_URL }}
           PORT: 3001
           SECRET: ${{ secrets.SECRET }}
-        run: npm start &
+        run: npm run dev &
       
       - name: Start frontend server
         working-directory: ./bloglist-frontend
         env:
-          VITE_BACKEND_URL: http://localhost:3001
+          VITE_BACKEND_URL: http://localhost:3001/api/
         run: npm run dev &
       
       - name: Install e2e dependencies
@@ -60,7 +58,7 @@ jobs:
       
       - name: Run Playwright tests
         working-directory: ./e2e
-        run: npx playwright test
+        run: npx playwright test --reporter=list
       
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}

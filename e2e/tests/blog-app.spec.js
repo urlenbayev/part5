@@ -61,28 +61,28 @@ describe("Blog app", () => {
     test("Blogs are sorted by likes", async ({ page }) => {
       await createBlog(
         page,
-        "First Blog with 10 likes",
+        "First Blog with 2 likes",
         "Demo author",
         "demo url"
       );
       await createBlog(
         page,
-        "Second Blog with 13 likes",
+        "Second Blog with 5 likes",
         "Demo author",
         "demo url"
       );
 
       const blogs = page.locator(".blog");
 
-      const firstBlog = blogs.filter({ hasText: "First Blog with 10 likes" });
+      const firstBlog = blogs.filter({ hasText: "First Blog with 2 likes" });
 
-      const secondBlog = blogs.filter({ hasText: "Second Blog with 13 likes" });
+      const secondBlog = blogs.filter({ hasText: "Second Blog with 5 likes" });
 
-      await likeBlog(firstBlog, 10);
-      await likeBlog(secondBlog, 13);
+      await likeBlog(firstBlog, 2);
+      await likeBlog(secondBlog, 5);
 
-      await expect(blogs.first()).toContainText("Second Blog with 13 likes");
-      await expect(blogs.last()).toContainText("First Blog with 10 likes");
+      await expect(blogs.first()).toContainText("Second Blog with 5 likes");
+      await expect(blogs.last()).toContainText("First Blog with 2 likes");
     });
 
     describe("with multiple users", () => {
