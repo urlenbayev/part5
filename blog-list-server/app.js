@@ -7,7 +7,7 @@ const morgan = require("./utils/morganMiddleware");
 
 mongoose
   .connect(config.mongoUrl)
-  .then(console.log("Connected to db"))
+  .then(() => console.log("Connected to db"))
   .catch((error) => {
     console.log(error);
   });
