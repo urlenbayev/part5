@@ -1,5 +1,3 @@
-import { time } from "console";
-
 const loginWith = async (page, username, password) => {
   await page.getByLabel("username").fill(username);
   await page.getByLabel("password").fill(password);
@@ -18,6 +16,8 @@ const likeBlog = async (blog, likeNumber) => {
   await blog.getByRole("button", { name: "View" }).click();
   for (let i = 0; i < likeNumber; i++) {
     await blog.getByRole("button", { name: "like" }).click();
+    // Wait for the like count to update before clicking again
+    await blog.getByText(`likes ${i + 1}`).waitFor();
   }
 };
 
