@@ -9,8 +9,8 @@ on:
       - master
 
 jobs:
-  simple_deployment_pipeline:
-    if: ${{ github.event.workflow_run.conclusion == 'success' && !contains((join(github.event.commits.*.message)), '#skip') }}
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' && !contains(github.event.workflow_run.head_commit.message, '#skip') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
